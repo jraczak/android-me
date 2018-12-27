@@ -16,10 +16,13 @@
 
 package com.example.android.android_me.ui;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.android.android_me.R;
+import com.example.android.android_me.data.AndroidImageAssets;
 
 // This activity will display a custom Android image composed of three body parts: head, body, and legs
 public class AndroidMeActivity extends AppCompatActivity {
@@ -32,13 +35,36 @@ public class AndroidMeActivity extends AppCompatActivity {
         // TODO (3) Show the first image in the list of head images
             // Soon, you'll update this image display code to show any image you want
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android_me);
 
-        // TODO (5) Create a new BodyPartFragment instance and display it using the FragmentManager
+        Intent intent = getIntent();
+
+        if (savedInstanceState == null) {
+
+            // TODO (5) Create a new BodyPartFragment instance and display it using the FragmentManager
+            BodyPartFragment headFragment = new BodyPartFragment();
+            headFragment.setImageIds(AndroidImageAssets.getHeads());
+            headFragment.setListIndex(intent.getIntExtra("headIndex",0));
+
+            BodyPartFragment bodyFragment = new BodyPartFragment();
+            bodyFragment.setImageIds(AndroidImageAssets.getBodies());
+            bodyFragment.setListIndex(intent.getIntExtra("bodyIndex", 0));
+
+            BodyPartFragment legsFragment = new BodyPartFragment();
+            legsFragment.setImageIds(AndroidImageAssets.getLegs());
+            legsFragment.setListIndex(intent.getIntExtra("legIndex", 0));
+
+            // Use a fragment manager and transaction to add the fragment to the view
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            fragmentManager.beginTransaction()
+                    .add(R.id.head_container, headFragment)
+                    .add(R.id.body_container, bodyFragment)
+                    .add(R.id.leg_container, legsFragment)
+                    .commit();
+        }
     }
 }
